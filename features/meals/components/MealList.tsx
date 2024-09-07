@@ -1,77 +1,40 @@
-import { View } from "react-native";
-import { UseMealsType } from "../hooks/useMeals";
-import { Button, Divider, Icon, ListItem, Text, useTheme } from "@rneui/themed";
-import { makeStyles } from "@rneui/base";
+import { Spacer } from "@/components/Spacer";
+import { SwipeableListItem } from "@/components/swipeableListItem/SwipeableListItem";
+import styled from "@emotion/native";
 import { ScrollView } from "react-native";
+import { Icon, Text } from "react-native-paper";
+import { UseMealsType } from "../hooks/useMeals";
 
 type MealListProps = Pick<UseMealsType, "filteredMeals" | "deleteMeal">;
 
-const useStyles = makeStyles({
-    container: {
-        display: "flex",
-        width: "100%",
-        flexGrow: 1,
-    },
-    noMeals: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-    },
-});
+const StyledScrollView = styled(ScrollView)`
+    width: 100%;
+`;
 
-const NoMealsView = () => {
-    const styles = useStyles();
-    const { theme } = useTheme();
-    return (
-        <View style={styles.noMeals}>
-            <Icon name="local-dining" size={64} color={theme.colors.primary}></Icon>
-            <Text h4>
-                No meals added
-            </Text>
-        </View>
-    );
-};
+const EmptyContainer = styled.View`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
 
-export const MealList = ({ filteredMeals, deleteMeal }: MealListProps) => {
-    const styles = useStyles();
-    return (
-        <ScrollView style={styles.container}>
-            {filteredMeals.map((meal, index) => (
-                <>
-                    <ListItem.Swipeable
-                        rightStyle={{ backgroundColor: "white" }}
-                        leftStyle={{ backgroundColor: "white" }}
-                        rightContent={(reset) => (
-                            <Button
-                                title="Delete"
-                                color={"error"}
-                                onPress={() => {
-                                    deleteMeal(index);
-                                    return reset();
-                                }}
-                                icon={{
-                                    name: "delete",
-                                    color: "white",
-                                }}
-                                buttonStyle={{
-                                    minHeight: "100%",
-                                    borderRadius: 0,
-                                }}
-                                containerStyle={{
-                                    borderRadius: 0,
-                                    minHeight: "100%",
-                                }}
-                            />
-                        )}
-                    >
-                        <ListItem.Title>{meal.name}</ListItem.Title>
-                    </ListItem.Swipeable>
-                    <Divider />
-                </>
-            ))}
+const NoMealsView = () => (
+    <EmptyContainer>
+        <Icon source="silverware" size={64} />
+        <Text variant="displayMedium">No meals added</Text>
+    </EmptyContainer>
+);
 
-            {filteredMeals.length === 0 && <NoMealsView />}
-            <View style={{ height: 32 }}></View>
-        </ScrollView>
-    );
-};
+export const MealList = ({ filteredMeals, deleteMeal }: MealListProps) => (
+    <StyledScrollView>
+        {filteredMeals.map((meal, index) => (
+            <SwipeableListItem
+                title={meal.name}
+                key={meal.name}
+                onDelete={() => deleteMeal(index)}
+            ></SwipeableListItem>
+        ))}
+
+        {filteredMeals.length === 0 && <NoMealsView />}
+        <Spacer />
+    </StyledScrollView>
+);

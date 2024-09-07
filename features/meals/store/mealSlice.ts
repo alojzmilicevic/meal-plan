@@ -11,6 +11,13 @@ export const meals: Meal[] = [
     { name: "Pasta Alfredo", category: "simple" },
     { name: "Quinoa Bowl", category: "healthy" },
     { name: "Steak Frites", category: "meat" },
+    { name: "Steak combo", category: "meat" },
+    { name: "Humper", category: "meat" },
+    { name: "a", category: "meat" },
+    { name: "b", category: "meat" },
+    { name: "c", category: "meat" },
+    { name: "d", category: "meat" },
+    { name: "e", category: "meat" },
 ];
 
 interface MealState {

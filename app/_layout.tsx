@@ -1,26 +1,18 @@
 import { store } from "@/store";
-import { appTheme } from "@/theme/theme";
-import { ThemeProvider, createTheme } from "@rneui/themed";
+import { lightTheme } from "@/theme/theme";
+import { ThemeProvider } from "@emotion/react";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { createContext, useContext, useEffect } from "react";
-import { StatusBar, StyleSheet } from "react-native";
-import { DefaultTheme, MD3Theme, PaperProvider } from "react-native-paper";
+import { useEffect } from "react";
+import { StatusBar } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-const ThemeContext = createContext(DefaultTheme);
-export const useTheme = () => useContext(ThemeContext);
-
-export const makeStyles = (styles: (arg0: MD3Theme) => any) => () => {
-    const theme = useTheme();
-    const evaluatedStyles = typeof styles === 'function' ? styles(theme) : styles;
-    return StyleSheet.create(evaluatedStyles);
-};
 
 export default function RootLayout() {
     const [loaded] = useFonts({
@@ -36,27 +28,30 @@ export default function RootLayout() {
     if (!loaded) {
         return null;
     }
-    const theme = createTheme(appTheme);
 
+    const theme = lightTheme;
+
+    const barStyle = theme.dark ? "light-content" : "dark-content";
     return (
-        <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1 }}>
+        <GestureHandlerRootView>
+            <SafeAreaProvider>
                 <Provider store={store}>
-                    <ThemeContext.Provider value={DefaultTheme}>
-                        <PaperProvider>
-                            <ThemeProvider theme={theme}>
-                                <StatusBar barStyle="dark-content" />
-                                <Stack>
-                                    <Stack.Screen
-                                        name="(tabs)"
-                                        options={{ headerShown: false }}
-                                    />
-                                </Stack>
-                            </ThemeProvider>
+                    <ThemeProvider theme={theme}>
+                        <PaperProvider theme={theme}>
+                            <StatusBar
+                                barStyle={barStyle}
+                                backgroundColor={theme.colors.background}
+                            />
+                            <Stack>
+                                <Stack.Screen
+                                    name="(tabs)"
+                                    options={{ headerShown: false }}
+                                />
+                            </Stack>
                         </PaperProvider>
-                    </ThemeContext.Provider>
+                    </ThemeProvider>
                 </Provider>
-            </SafeAreaView>
-        </SafeAreaProvider>
+            </SafeAreaProvider>
+        </GestureHandlerRootView>
     );
 }

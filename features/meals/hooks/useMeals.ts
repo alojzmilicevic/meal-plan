@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Meal, MealTypeSelection, mealTypes } from "../interface/interface";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -6,6 +6,7 @@ import {
     removeMeal,
     addMeal as addMealAction,
 } from "../store/mealSlice";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 export type UseMealsType = {
     mealTypeSelections: MealTypeSelection[];
@@ -13,6 +14,8 @@ export type UseMealsType = {
     filteredMeals: Meal[];
     deleteMeal: (n: number) => void;
     addMeal: (meal: Meal) => void;
+    bottomSheetModalRef: React.RefObject<BottomSheetModal>;
+    handlePresentModalPress: () => void;
 };
 
 export function useMeals(): UseMealsType {
@@ -26,6 +29,13 @@ export function useMeals(): UseMealsType {
             type,
         }))
     );
+
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+    // callbacks
+    const handlePresentModalPress = useCallback(() => {
+        bottomSheetModalRef.current?.present();
+    }, []);
 
     const deleteMeal = (n: number) => dispatch(removeMeal({ index: n }));
     const addMeal = (meal: Meal) => dispatch(addMealAction({ meal }));
@@ -54,5 +64,7 @@ export function useMeals(): UseMealsType {
         filteredMeals,
         deleteMeal,
         addMeal,
+        bottomSheetModalRef,
+        handlePresentModalPress,
     };
 }
