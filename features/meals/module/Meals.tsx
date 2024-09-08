@@ -1,11 +1,9 @@
 import styled from "@emotion/native";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useCallback, useRef } from "react";
 import { FAB, Text } from "react-native-paper";
 import { Badges } from "../components/Badges";
 import { MealList } from "../components/MealList";
 import { useMeals } from "../hooks/useMeals";
-import { BottomSheet } from "../components/BottomSheet";
+import { BottomSheet } from "../components/BottomSheet/BottomSheet";
 
 const StyledContainer = styled.View`
     display: flex;
@@ -39,7 +37,6 @@ export const Meals = () => {
         bottomSheetModalRef,
         handlePresentModalPress,
     } = useMeals();
-    
 
     return (
         <ScreenContainer>
@@ -56,7 +53,10 @@ export const Meals = () => {
             </StyledContainer>
 
             <StyledFab icon="plus" onPress={handlePresentModalPress} />
-            <BottomSheet bottomSheetModalRef={bottomSheetModalRef} />
+            <BottomSheet
+                bottomSheetModalRef={bottomSheetModalRef}
+                addMeal={addMeal}
+            />
         </ScreenContainer>
     );
 };
